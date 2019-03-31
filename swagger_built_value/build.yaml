@@ -1,0 +1,21 @@
+
+targets:
+  $default:
+    builders:
+      swagger_built_value|swagger_built_value:
+        enabled: true
+
+builders:
+  swagger_built_value:
+    import: "package:swagger_built_value/builder.dart"
+    builder_factories: ["swaggerBuiltValueBuilder"]
+    build_extensions: 
+        .yaml: 
+          - '.yaml.dart'
+        .yml: 
+          - '.yml.dart'
+        .json: 
+          - '.json.dart'
+    build_to: source
+    auto_apply: dependents
+    runs_before: ["built_value_generator|built_value"]
