@@ -11,9 +11,9 @@ builders:
     builder_factories: ["swaggerBuiltValueBuilder"]
     build_extensions: 
         .yaml: 
-          - '.yaml.dart'
+          - '.yaml.built.dart'
         .yml: 
-          - '.yml.dart'
+          - '.yml.built.dart'
         .json: 
           - '.json.dart'
     build_to: source

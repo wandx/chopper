@@ -1,0 +1,20 @@
+targets:
+  $default:
+    builders:
+      swagger_chopper|swagger_chopper:
+        enabled: true
+
+builders:
+  swagger_chopper:
+    import: "package:swagger_chopper/builder.dart"
+    builder_factories: ["swaggerChopperBuilder"]
+    build_extensions: 
+        .yaml: 
+          - '.yaml.definition.dart'
+        .yml: 
+          - '.yml.definition.dart'
+        .json: 
+          - '.json.definition.dart'
+    build_to: source
+    auto_apply: dependents
+    runs_before: ["swagger_built_value|swagger_built_value"]

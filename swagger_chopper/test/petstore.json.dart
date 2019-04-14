@@ -6,6 +6,13 @@ import 'package:built_collection/built_collection.dart';
 
 part 'petstore.json.g.dart';
 
+/// Swagger Petstore
+/// 1.0.0
+/// This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.
+/// Terms: http://swagger.io/terms/
+/// email: apiteam@swagger.io
+/// Apache 2.0, http://www.apache.org/licenses/LICENSE-2.0.html
+
 abstract class Order implements Built<Order, OrderBuilder> {
 
   @nullable
@@ -20,8 +27,8 @@ abstract class Order implements Built<Order, OrderBuilder> {
   @nullable
   DateTime get shipDate;
 
-  // Order Status
-  // Enum: placed, approved, delivered
+  /// Order Status
+  /// Enum: placed, approved, delivered
   @nullable
   OrderStatus get status;
 
@@ -56,7 +63,7 @@ abstract class User implements Built<User, UserBuilder> {
   @nullable
   String get phone;
 
-  // User Status
+  /// User Status
   @nullable
   int get userStatus;
 
@@ -106,8 +113,8 @@ abstract class Pet implements Built<Pet, PetBuilder> {
   @nullable
   BuiltList<Tag> get tags;
 
-  // pet status in the store
-  // Enum: available, pending, sold
+  /// pet status in the store
+  /// Enum: available, pending, sold
   @nullable
   PetStatus get status;
 

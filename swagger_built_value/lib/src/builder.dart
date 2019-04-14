@@ -2,19 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:build/build.dart';
-import 'package:logging/logging.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:swagger_built_value/src/types.dart';
 import 'package:swagger_built_value/src/utils.dart';
 
 import 'parser.dart';
 import 'yaml.dart';
 
-final _log = Logger('SwaggerBuiltValue');
-
 class SwaggerBuiltValueBuilder implements Builder {
   final BuilderOptions options;
-
-  final enums = Set<SwaggerEnum>();
 
   SwaggerBuiltValueBuilder(this.options);
 
@@ -31,8 +27,13 @@ class SwaggerBuiltValueBuilder implements Builder {
       definitions = jsonDecode(contents);
     }
 
-    if (definitions['swagger'] != '2.0') return;
-    final outputId = inputId.addExtension('.dart');
+    final version = definitions['openapi'] ?? definitions['swagger'];
+    if (version == null) return;
+    if (!version.startsWith('3')) {
+      throw 'Version $version not supported';
+    }
+
+    final outputId = inputId.addExtension('.built.dart');
 
     await buildStep.writeAsString(
       outputId,
@@ -64,17 +65,38 @@ class SwaggerBuiltValueBuilder implements Builder {
     sb.writeln('');
     sb.writeln('part \'$filename\';');
 
-    doc.getDefinitions().forEach((def) {
+    sb.writeln('');
+    if (doc.title != null) {
+      sb.writeln('/// ${doc.title}');
+    }
+    if (doc.version != null) {
+      sb.writeln('/// ${doc.version}');
+    }
+    if (doc.description != null) {
+      sb.writeln('/// ${doc.description}');
+    }
+    if (doc.terms != null) {
+      sb.writeln('/// Terms: ${doc.terms}');
+    }
+    doc.contact?.forEach((name, val) {
+      sb.writeln('/// $name: $val');
+    });
+    if (doc.license?.values?.isNotEmpty == true) {
+      sb.writeln('/// ${doc.license.values.join(', ')}');
+    }
+
+    doc.getComponents().forEach((def) {
       sb.writeln('');
-      sb = buildDefintion(def, sb);
+      if (def is SwaggerSchema) {
+        if (def.isEnum) {
+          sb = buildEnum(def.getEnum(), sb);
+        } else {
+          sb = buildSchema(def, sb);
+        }
+      }
     });
 
-    enums.forEach((enumType) {
-      sb.writeln('');
-      sb = buildEnum(enumType, sb);
-    });
-
-    return sb.toString();
+    return DartFormatter().format(sb.toString());
   }
 
   StringBuffer buildProperty(SwaggerProperty property, SwaggerType type,
@@ -85,10 +107,10 @@ class SwaggerBuiltValueBuilder implements Builder {
 
     sb.writeln('');
     if (description != null) {
-      sb.writeln('  // $description');
+      sb.writeln('  /// $description');
     }
     if (type is SwaggerEnum) {
-      sb.writeln('  // Enum: ${type.values.join(", ")}');
+      sb.writeln('  /// Enum: ${type.values.join(", ")}');
     }
     if (!property.required) {
       sb.writeln('  @nullable');
@@ -99,28 +121,24 @@ class SwaggerBuiltValueBuilder implements Builder {
     return sb;
   }
 
-  StringBuffer buildDefintion(SwaggerDefinition definition, [StringBuffer sb]) {
-    final description = definition.description;
-    final className = capitalize(definition.className);
+  StringBuffer buildSchema(SwaggerSchema schema, [StringBuffer sb]) {
+    final description = schema.description;
+    final className = capitalize(schema.className);
     final builderName = '${className}Builder';
     final serializerName = '_\$${withFirstCharInLower(className)}Serializer';
 
     sb ??= StringBuffer();
 
     if (description != null) {
-      sb.writeln('  // $description');
+      sb.writeln('  /// $description');
     }
     sb.writeln(
       'abstract class $className implements Built<$className, $builderName> {',
     );
 
-    definition.getProperties().forEach((prop) {
+    schema.getProperties().forEach((prop) {
       final type = prop.getType();
       sb = buildProperty(prop, type, sb);
-
-      if (type is SwaggerEnum) {
-        enums.add(type);
-      }
     });
 
     sb.writeln('');
@@ -139,9 +157,9 @@ class SwaggerBuiltValueBuilder implements Builder {
 
   @override
   final buildExtensions = const {
-    '.yaml': ['.yaml.dart'],
-    '.yml': ['.yml.dart'],
-    '.json': ['.json.dart'],
+    '.yaml': ['.yaml.built.dart'],
+    '.yml': ['.yml.built.dart'],
+    '.json': ['.json.built.dart'],
   };
 
   StringBuffer buildEnum(SwaggerEnum enumType, StringBuffer sb) {

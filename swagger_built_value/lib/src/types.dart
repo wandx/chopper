@@ -79,10 +79,10 @@ class SwaggerArray implements SwaggerType {
   String toString() => 'BuiltList<$item>';
 }
 
-class SwaggerObject implements SwaggerType {
+class SwaggerReference implements SwaggerType {
   final String name;
 
-  SwaggerObject(this.name);
+  SwaggerReference(this.name);
 
   String toString() => name;
 }
