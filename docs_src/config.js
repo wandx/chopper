@@ -17,8 +17,6 @@ const config = {
 	"sidebar": {
 		"forcedNavOrder": [
 			"/get-started",
-			"/interceptors",
-			"/converters",
 			"/multipart",
 			"/errors",
 			"/testing"

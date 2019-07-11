@@ -1,3 +1,4 @@
+[![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper)
 [![Build Status](https://travis-ci.org/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper)
 [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
 
@@ -147,6 +148,7 @@ final chopper = new ChopperClient(
 ## More example
 
   - [Json serializable](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
+  - [Built Value](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
   - [Jaguar Serializer](https://github.com/lejard-h/chopper/blob/master/example/bin/main_jaguar_serializer.dart)
   - [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
   
