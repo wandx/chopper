@@ -14,13 +14,16 @@ jobs:
     - uses: actions/checkout@v1
     
     - name: Chopper
-      working-directory: ./chopper
+      env:
+        PKG: chopper
       run: bash ./tool/travis.sh dartanalyzer dartfmt test
       
     - name: Chopper Generator
-      working-directory: ./chopper_generator
+      env:
+        PKG: chopper_generator
       run: bash ./tool/travis.sh dartanalyzer dartfmt test
       
     - name: Chopper Built Value
-      working-directory: ./chopper_built_value
+      env:
+        PKG: chopper_built_value
       run: bash ./tool/travis.sh dartanalyzer dartfmt test
