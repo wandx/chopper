@@ -11,7 +11,7 @@ environment:
 dependencies:
   meta: ^1.2.3
   analyzer: ^0.41.2
-  build: ^1.5.0
+  build: ^1.12.0
   logging: ^0.11.4
   source_gen: ^0.9.7+1
   chopper: ^3.0.3
